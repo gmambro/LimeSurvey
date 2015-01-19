@@ -107,7 +107,7 @@ class participantsaction extends Survey_Common_Action
             return false;
 
         // Field names in the first row
-        $fields = array('participant_id', 'firstname', 'lastname', 'email', 'language', 'blacklisted', 'owner_uid');
+        $fields = array('participant_id', 'firstname', 'lastname', 'email', 'language', 'blacklisted', 'public', 'owner_uid');
         $outputarray = array(); // The array to be passed to the export helper to be written to a csv file
 
         $outputarray[0] = $fields; //fields written to output array
@@ -503,7 +503,8 @@ class participantsaction extends Survey_Common_Action
                 'lastname' => Yii::app()->request->getPost('lastname'),
                 'email' => Yii::app()->request->getPost('email'),
                 'language' => Yii::app()->request->getPost('language'),
-                'blacklisted' => Yii::app()->request->getPost('blacklisted')
+                'blacklisted' => Yii::app()->request->getPost('blacklisted'),
+                'public' => Yii::app()->request->getPost('public')
             );
             Participant::model()->updateRow($aData);
         }
@@ -518,6 +519,7 @@ class participantsaction extends Survey_Common_Action
                 'email' => Yii::app()->request->getPost('email'),
                 'language' => Yii::app()->request->getPost('language'),
                 'blacklisted' => Yii::app()->request->getPost('blacklisted'),
+                'public' => Yii::app()->request->getPost('public'),
                 'owner_uid' => Yii::app()->session['loginID'],
                 'created_by' => Yii::app()->session['loginID']
             );
@@ -769,7 +771,7 @@ class participantsaction extends Survey_Common_Action
         $limit = empty($limit) ? 50:$limit; //Stop division by zero errors
 
         $attid = ParticipantAttributeName::model()->getVisibleAttributes();
-        $participantfields = array('participant_id', 'can_edit', 'firstname', 'lastname', 'email', 'blacklisted', 'survey', 'language', 'owner_uid');
+        $participantfields = array('participant_id', 'can_edit', 'firstname', 'lastname', 'email', 'blacklisted', 'public', 'survey', 'language', 'owner_uid');
         foreach ($attid as $key => $value)
         {
             array_push($participantfields, 'a'.$value['attribute_id']);
@@ -814,7 +816,7 @@ class participantsaction extends Survey_Common_Action
             if (trim($row['ownername'])=='') {
                 $row['ownername']=$row['username'];
             }
-            $aRowToAdd['cell'] = array($row['participant_id'], $sCanEdit, htmlspecialchars($row['firstname']), htmlspecialchars($row['lastname']), htmlspecialchars($row['email']), $row['blacklisted'], $row['survey'], $row['language'], $row['ownername']);
+            $aRowToAdd['cell'] = array($row['participant_id'], $sCanEdit, htmlspecialchars($row['firstname']), htmlspecialchars($row['lastname']), htmlspecialchars($row['email']), $row['blacklisted'], $row['public'], $row['survey'], $row['language'], $row['ownername']);
             $aRowToAdd['id'] = $row['participant_id'];
             // add attribute values
             foreach($row as $key=>$attvalue)
@@ -1229,7 +1231,7 @@ class participantsaction extends Survey_Common_Action
                 // Pick apart the first line
                 $buffer = removeBOM($buffer);
                 $attrid = ParticipantAttributeName::model()->getAttributeID();
-                $allowedfieldnames = array('participant_id', 'firstname', 'lastname', 'email', 'language', 'blacklisted');
+                $allowedfieldnames = array('participant_id', 'firstname', 'lastname', 'email', 'language', 'public', 'blacklisted');
                 $aFilterDuplicateFields = array('firstname', 'lastname', 'email');
                 if (!empty($mappedarray))
                 {
@@ -1373,6 +1375,10 @@ class participantsaction extends Survey_Common_Action
                     if (!isset($writearray['blacklisted']) || $writearray['blacklisted'] == "") {
                         $writearray['blacklisted'] = "N";
                     }
+                    if (!isset($writearray['public']) || $writearray['public'] == "") {
+                        $writearray['public'] = "N";
+                    }
+
                     $writearray['owner_uid'] = Yii::app()->session['loginID'];
                     if (isset($writearray['validfrom']) && trim($writearray['validfrom'] == '')) {
                         unset($writearray['validfrom']);

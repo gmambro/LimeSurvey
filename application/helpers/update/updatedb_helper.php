@@ -1258,6 +1258,11 @@ function db_upgrade_all($iOldDBVersion) {
             }
             $oDB->createCommand()->update('{{settings_global}}',array('stg_value'=>178),"stg_name='DBVersion'");
         }
+        if ($iOldDBVersion < 179)
+        {
+            addColumn('{{participants}}','public',"{$sVarchar}(1) default 'N'");
+            $oDB->createCommand()->update('{{settings_global}}',array('stg_value'=>179),"stg_name='DBVersion'");
+        } 
 
         $oTransaction->commit();
         // Activate schema caching

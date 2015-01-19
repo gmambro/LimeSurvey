@@ -23,7 +23,7 @@
  * @property string $email
  * @property string $language
  * @property string $blacklisted
- * @property integer $owner_uid
+ * @property string $public
  */
 class Participant extends LSActiveRecord
 {
@@ -64,6 +64,7 @@ class Participant extends LSActiveRecord
             array('firstname, lastname, language', 'LSYii_Validators'),
             array('email', 'length', 'max' => 254),
             array('blacklisted', 'length', 'max' => 1),
+	    array('public', 'length', 'max' => 1),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('participant_id, firstname, lastname, email, language, blacklisted, owner_uid', 'safe', 'on' => 'search'),
@@ -93,6 +94,7 @@ class Participant extends LSActiveRecord
             'email' => 'Email',
             'language' => 'Language',
             'blacklisted' => 'Blacklisted',
+	    'public'    => 'Public',
             'owner_uid' => 'Owner Uid',
         );
     }
@@ -192,7 +194,7 @@ class Participant extends LSActiveRecord
             ->select('{{participants}}.participant_id,{{participant_shares}}.can_edit')
             ->from('{{participants}}')
             ->leftJoin('{{participant_shares}}', ' {{participants}}.participant_id={{participant_shares}}.participant_id')
-            ->where('owner_uid = :userid1 OR share_uid = :userid2')
+            ->where('owner_uid = :userid1 OR share_uid = :userid2 OR public = \'Y\'')
             ->group('{{participants}}.participant_id,{{participant_shares}}.can_edit');
 
         $command = Yii::app()->db->createCommand()
@@ -211,7 +213,7 @@ class Participant extends LSActiveRecord
                         ->select('count(*)')
                         ->from('{{participants}} p')
                         ->leftJoin('{{participant_shares}} ps', 'ps.participant_id = p.participant_id')
-                        ->where('p.owner_uid = :userid1 OR ps.share_uid = :userid2')
+                        ->where('p.owner_uid = :userid1 OR ps.share_uid = :userid2 OR public = \'Y\'')
                         ->bindParam(":userid1", $userid, PDO::PARAM_INT)
                         ->bindParam(":userid2", $userid, PDO::PARAM_INT);
         return $command->queryScalar();
@@ -313,7 +315,7 @@ class Participant extends LSActiveRecord
             // We are not superadmin so we need to limit to our own or shared with us
             $selectValue[] = '{{participant_shares}}.can_edit';
             $joinValue[]   = 'LEFT JOIN {{participant_shares}} ON p.participant_id={{participant_shares}}.participant_id';
-            $aConditions[] = 'p.owner_uid = :userid1 OR {{participant_shares}}.share_uid = :userid2';
+            $aConditions[] = 'p.owner_uid = :userid1 OR {{participant_shares}}.share_uid = :userid2 OR p.public=\'Y\'';
         }
 
         if ($count) {

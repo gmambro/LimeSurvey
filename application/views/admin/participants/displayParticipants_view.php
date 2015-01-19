@@ -72,6 +72,7 @@ else
     var firstnameTxt="<?php $clang->eT("First name") ?>";
     var lastnameTxt="<?php $clang->eT("Last name") ?>";
     var blacklistedTxt="<?php $clang->eT("Blacklisted") ?>";
+    var publicTxt="<?php $clang->eT("Public") ?>";
     var surveysTxt="<?php $clang->eT("Survey links") ?>";
     var surveyTxt="<?php $clang->eT("Survey name") ?>";
     var languageTxt="<?php $clang->eT("Language") ?>";
@@ -170,13 +171,14 @@ else
     var searchconditions = "<?php echo $sSearchCondition; ?>";
     var bEditPermission = <?php echo (Permission::model()->hasGlobalPermission('participantpanel','update'))? 'true' : 'false'; ?>;
     var bDeletePermission = <?php echo (Permission::model()->hasGlobalPermission('participantpanel','delete'))? 'true' : 'false'; ?>;
-    var colNames = '["participant_id","can_edit","<?php $clang->eT("First name") ?>","<?php $clang->eT("Last name") ?>","<?php $clang->eT("Email") ?>","<?php $clang->eT("Blacklisted") ?>","<?php $clang->eT("Surveys") ?>","<?php $clang->eT("Language") ?>","<?php $clang->eT("Owner name") ?>"<?php echo $columnNames; ?>]';
+    var colNames = '["participant_id","can_edit","<?php $clang->eT("First name") ?>","<?php $clang->eT("Last name") ?>","<?php $clang->eT("Email") ?>","<?php $clang->eT("Blacklisted") ?>","<?php $clang->eT("Public") ?>","<?php $clang->eT("Surveys") ?>","<?php $clang->eT("Language") ?>","<?php $clang->eT("Owner name") ?>"<?php echo $columnNames; ?>]';
     var colModels = '[{ "name":"participant_id", "index":"participant_id", "width":100, "align":"center", "sorttype":"int", "sortable": true, "editable":false, "hidden":true},';
     colModels += '{ "name":"can_edit", "index":"can_edit", "width":10, "align":"center", "sorttype":"int", "sortable": true, "editable":false, "hidden":true},';
     colModels += '{ "name":"firstname", "index":"firstname", "sorttype":"string", "sortable": true, "width":120, "align":"center", "editable":true},';
     colModels += '{ "name":"lastname", "index":"lastname", "sorttype":"string", "sortable": true,"width":120, "align":"center", "editable":true},';
     colModels += '{ "name":"email", "index":"email","align":"center","width":300, "sorttype":"string", "sortable": true, "editable":true},';
     colModels += '{ "name":"blacklisted", "index":"blacklisted","align":"center","width":80,"sorttype":"string", "sortable": true, "editable":true, "edittype":"checkbox", "editoptions":{ "value":"Y:N"}},';
+    colModels += '{ "name":"public", "index":"public","align":"center","width":80,"sorttype":"string", "sortable": true, "editable":true, "edittype":"checkbox", "editoptions":{ "value":"Y:N"}},';
     colModels += '{ "name":"survey", "index":"survey","align":"center", "sorttype":"int", "sortable": true,"width":80,"editable":false},';
 
 <?php
@@ -193,6 +195,7 @@ echo $colModels;
         'lastname' => $clang->gT("Last name"),
         'email' => $clang->gT("Email"),
         'blacklisted' => $clang->gT("Blacklisted"),
+        'public' => $clang->gT("Public"),
         'surveys' => $clang->gT("Survey links"),
         'survey' => $clang->gT("Survey name"),
         'language' => $clang->gT("Language"),

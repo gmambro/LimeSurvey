@@ -198,6 +198,7 @@ CREATE TABLE `prefix_participants` (
   `email` varchar(254) DEFAULT NULL,
   `language` varchar(40) DEFAULT NULL,
   `blacklisted` varchar(1) NOT NULL,
+  `public` varchar(1) NOT NULL,
   `owner_uid` int(11) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created` datetime,
@@ -575,4 +576,4 @@ CREATE INDEX `parent_qid_idx` ON `prefix_questions` (`parent_qid`);
 --
 -- Version Info
 --
-INSERT INTO `prefix_settings_global` VALUES ('DBVersion', '178');
+INSERT INTO `prefix_settings_global` VALUES ('DBVersion', '179');
